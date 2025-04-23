@@ -17,7 +17,7 @@ export default function Timer() {
           const newTime = Math.max(prev - 100, 0);
 
           // Patlamaya 10 saniye kala sesi çal
-          if (newTime <= 10000 && !playedRef.current) {
+          if (newTime <= 5000 && !playedRef.current) {
             const preBoom = new Audio("/explosion.mp3");
             preBoom.play();
             playedRef.current = true;
@@ -118,7 +118,6 @@ export default function Timer() {
           {active ? formatTime(remaining) : (input ? `${input} dk` : "Dakika gir")}
         </div>
 
-        {/* Tuş Takımı */}
         <div style={{
           position: "absolute",
           top: "68%",
