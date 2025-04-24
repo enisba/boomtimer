@@ -7,7 +7,11 @@ export default function Timer() {
   const [active, setActive] = useState(false);
   const [explosion, setExplosion] = useState(false);
   const playedRef = useRef(false); 
+  const boomSoundRef = useRef(null);
 
+  useEffect(() => {
+    boomSoundRef.current = new Audio(import.meta.env.BASE_URL + "explosion.mp3");
+  }, []);
   useEffect(() => {
     let interval;
 
@@ -17,7 +21,7 @@ export default function Timer() {
           const newTime = Math.max(prev - 100, 0);
 
           if (newTime <= 5000 && !playedRef.current) {
-            const preBoom = new Audio(import.meta.env.BASE_URL + "explosion.mp3");
+            boomSoundRef.current?.play();
             preBoom.play();
             playedRef.current = true;
           }
