@@ -6,7 +6,7 @@ export default function Timer() {
   const [remaining, setRemaining] = useState(0);
   const [active, setActive] = useState(false);
   const [explosion, setExplosion] = useState(false);
-  const playedRef = useRef(false); // sesi sadece bir kere çalmak için
+  const playedRef = useRef(false); 
 
   useEffect(() => {
     let interval;
@@ -16,9 +16,8 @@ export default function Timer() {
         setRemaining(prev => {
           const newTime = Math.max(prev - 100, 0);
 
-          // Patlamaya 10 saniye kala sesi çal
           if (newTime <= 5000 && !playedRef.current) {
-            const preBoom = new Audio("/explosion.mp3");
+            const preBoom = new Audio(import.meta.env.BASE_URL + "explosion.mp3");
             preBoom.play();
             playedRef.current = true;
           }
@@ -58,7 +57,7 @@ export default function Timer() {
     if (value === "C") {
       setInput("");
     } else if (value === "OK") {
-      const parsed = parseFloat(input) * 60 * 1000; // dakikayı milisaniyeye çevir
+      const parsed = parseFloat(input) * 60 * 1000;
       if (!isNaN(parsed) && parsed > 0) {
         setRemaining(parsed);
         setActive(true);
@@ -89,7 +88,7 @@ export default function Timer() {
         aspectRatio: "3 / 4",
       }}>
         <img
-          src="/dynamite.png"
+          src={`${import.meta.env.BASE_URL}dynamite.png`}
           alt="bomba"
           style={{
             width: "100%",
@@ -98,7 +97,6 @@ export default function Timer() {
           }}
         />
 
-        {/* Dijital ekran */}
         <div style={{
           position: "absolute",
           top: "25%",
@@ -151,7 +149,7 @@ export default function Timer() {
         {/* Patlama efekti */}
         {explosion && (
           <img
-            src="/boom.gif"
+            src={`${import.meta.env.BASE_URL}boom.gif`}
             alt="Patlama"
             style={{
               position: "absolute",
