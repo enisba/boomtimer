@@ -6,35 +6,37 @@ export default function Timer() {
   const [remaining, setRemaining] = useState(0);
   const [active, setActive] = useState(false);
   const [explosion, setExplosion] = useState(false);
-  const playedRef = useRef(false); 
+  const [startTime, setStartTime] = useState(null);
+  const [duration, setDuration] = useState(0);
+  const playedRef = useRef(false);
 
   useEffect(() => {
     let interval;
 
-    if (active && remaining > 0) {
+    if (active) {
       interval = setInterval(() => {
-        setRemaining(prev => {
-          const newTime = Math.max(prev - 100, 0);
+        const now = Date.now();
+        const elapsed = now - startTime;
+        const newRemaining = Math.max(duration - elapsed, 0);
 
-          if (newTime <= 5000 && !playedRef.current) {
-            const preBoom = new Audio(import.meta.env.BASE_URL + "explosion.mp3");
-            preBoom.play();
-            playedRef.current = true;
-          }
+        setRemaining(newRemaining);
 
-          return newTime;
-        });
+        if (newRemaining <= 5000 && !playedRef.current) {
+          const preBoom = new Audio(import.meta.env.BASE_URL + "explosion.mp3");
+          preBoom.play();
+          playedRef.current = true;
+        }
+
+        if (newRemaining === 0) {
+          setActive(false);
+          setExplosion(true);
+          playedRef.current = false;
+        }
       }, 100);
     }
 
-    if (active && remaining === 0) {
-      setActive(false);
-      setExplosion(true);
-      playedRef.current = false;
-    }
-
     return () => clearInterval(interval);
-  }, [active, remaining]);
+  }, [active, startTime, duration]);
 
   useEffect(() => {
     if (explosion) {
@@ -54,14 +56,19 @@ export default function Timer() {
 
   const handleButtonPress = (value) => {
     if (active) return;
+
     if (value === "C") {
       setInput("");
     } else if (value === "OK") {
       const parsed = parseFloat(input) * 60 * 1000;
       if (!isNaN(parsed) && parsed > 0) {
+        const now = Date.now();
+        setStartTime(now);
+        setDuration(parsed);
         setRemaining(parsed);
         setActive(true);
         setExplosion(false);
+        playedRef.current = false;
       }
     } else {
       if (input.length < 5) setInput(prev => prev + value);
@@ -145,8 +152,6 @@ export default function Timer() {
             </button>
           ))}
         </div>
-
-        {/* Patlama efekti */}
         {explosion && (
           <img
             src={`${import.meta.env.BASE_URL}boom.gif`}
