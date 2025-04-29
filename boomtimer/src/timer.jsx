@@ -9,6 +9,12 @@ export default function Timer() {
   const [startTime, setStartTime] = useState(null);
   const [duration, setDuration] = useState(0);
   const playedRef = useRef(false);
+  const boomAudioRef = useRef(null);
+
+  useEffect(() => {
+    boomAudioRef.current = new Audio(import.meta.env.BASE_URL + "explosion.mp3");
+    boomAudioRef.current.volume = 1.0; 
+  }, []);
 
   useEffect(() => {
     let interval;
@@ -22,8 +28,11 @@ export default function Timer() {
         setRemaining(newRemaining);
 
         if (newRemaining <= 5000 && !playedRef.current) {
-          const preBoom = new Audio(import.meta.env.BASE_URL + "explosion.mp3");
-          preBoom.play();
+          if (boomAudioRef.current) {
+            boomAudioRef.current.play().catch((e) => {
+              console.log("Ses çalınamadı:", e);
+            });
+          }
           playedRef.current = true;
         }
 
@@ -71,7 +80,7 @@ export default function Timer() {
         playedRef.current = false;
       }
     } else {
-      if (input.length < 5) setInput(prev => prev + value);
+      if (input.length < 5) setInput((prev) => prev + value);
     }
   };
 
@@ -152,6 +161,7 @@ export default function Timer() {
             </button>
           ))}
         </div>
+
         {explosion && (
           <img
             src={`${import.meta.env.BASE_URL}boom.gif`}
