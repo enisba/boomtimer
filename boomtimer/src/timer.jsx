@@ -30,7 +30,7 @@ export default function Timer() {
         if (newRemaining <= 5000 && !playedRef.current) {
           if (boomAudioRef.current) {
             boomAudioRef.current.play().catch((e) => {
-              console.log("Ses çalınamadı:", e);
+              console.log("Voice not working:", e);
             });
           }
           playedRef.current = true;
@@ -129,7 +129,7 @@ export default function Timer() {
           borderRadius: "4px",
           boxShadow: "inset 0 0 10px #888",
         }}>
-          {active ? formatTime(remaining) : (input ? `${input} dk` : "Dakika gir")}
+          {active ? formatTime(remaining) : (input ? `${input} dk` : "0 min")}
         </div>
 
         <div style={{
